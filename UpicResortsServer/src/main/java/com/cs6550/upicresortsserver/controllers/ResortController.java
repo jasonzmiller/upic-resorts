@@ -2,6 +2,8 @@ package com.cs6550.upicresortsserver.controllers;
 
 import com.cs6550.upicresortsserver.models.Resort;
 import com.cs6550.upicresortsserver.models.Season;
+import com.cs6550.upicresortsserver.services.ResortService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,11 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class ResortsController {
+public class ResortController {
+
+    @Autowired
+    private ResortService service;
 
     @GetMapping("/resorts")
     public List<Resort> getResorts() {
-        return null;
+        return service.getResorts();
     }
 
     @GetMapping("/resorts/{resortId}/seasons")
