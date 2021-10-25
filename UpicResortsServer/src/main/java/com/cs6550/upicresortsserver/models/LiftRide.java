@@ -1,12 +1,18 @@
 package com.cs6550.upicresortsserver.models;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class LiftRide {
-    private final int resortId;
-    private final int seasonId;
-    private final int dayId;
-    private final int skierId;
-    private final int liftId;
-    private final int vertical;
+    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) int resortId;
+    private int seasonId;
+    private int dayId;
+    private int skierId;
+    private int vertical;
+    private int liftId;
 
     public LiftRide(int resortId, int seasonId, int dayId, int skierId, int liftId, int vertical) {
         this.resortId = resortId;
@@ -16,6 +22,8 @@ public class LiftRide {
         this.liftId = liftId;
         this.vertical = vertical;
     }
+
+    public LiftRide() {}
 
     public int getResortId() {
         return resortId;

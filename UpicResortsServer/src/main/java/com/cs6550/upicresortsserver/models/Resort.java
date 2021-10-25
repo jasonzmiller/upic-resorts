@@ -1,20 +1,25 @@
 package com.cs6550.upicresortsserver.models;
 
+import javax.persistence.*;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
 public class Resort {
-    private final int resortId;
-    private final String resortName;
-    private final Set<Season> seasons = new HashSet<>();
+    private @Id @GeneratedValue(strategy = GenerationType.AUTO) Long resortId;
+    private String resortName;
+    private @ManyToMany Set<Season> seasons;
 
-    public Resort(int resortId, String resortName) {
+    public Resort(Long resortId, String resortName) {
         this.resortId = resortId;
         this.resortName = resortName;
+        this.seasons = new HashSet<>();
     }
 
-    public int getResortId() {
+    public Resort() {}
+
+    public Long getResortId() {
         return resortId;
     }
 
