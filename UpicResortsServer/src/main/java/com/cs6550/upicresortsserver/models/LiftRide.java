@@ -1,51 +1,91 @@
 package com.cs6550.upicresortsserver.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "liftrides")
 public class LiftRide {
-    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) int resortId;
-    private int seasonId;
-    private int dayId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int liftRideId;
+
+    private int resortId;
+
+    private String seasonId;
+
+    private String dayId;
+
     private int skierId;
-    private int vertical;
+
+    private int time;
+
     private int liftId;
 
-    public LiftRide(int resortId, int seasonId, int dayId, int skierId, int liftId, int vertical) {
-        this.resortId = resortId;
-        this.seasonId = seasonId;
-        this.dayId = dayId;
-        this.skierId = skierId;
-        this.liftId = liftId;
-        this.vertical = vertical;
-    }
+    private int vertical;
 
     public LiftRide() {}
+
+    public int getLiftRideId() {
+        return liftRideId;
+    }
+
+    public void setLiftRideId(int liftRideId) {
+        this.liftRideId = liftRideId;
+    }
 
     public int getResortId() {
         return resortId;
     }
 
-    public int getSeasonId() {
+    public void setResortId(int resortId) {
+        this.resortId = resortId;
+    }
+
+    public String getSeasonId() {
         return seasonId;
     }
 
-    public int getDayId() {
+    public void setSeasonId(String seasonId) {
+        this.seasonId = seasonId;
+    }
+
+    public String getDayId() {
         return dayId;
+    }
+
+    public void setDayId(String dayId) {
+        this.dayId = dayId;
     }
 
     public int getSkierId() {
         return skierId;
     }
 
+    public void setSkierId(int skierId) {
+        this.skierId = skierId;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
     public int getLiftId() {
         return liftId;
     }
 
+    public void setLiftId(int liftId) {
+        this.liftId = liftId;
+    }
+
     public int getVertical() {
         return vertical;
+    }
+
+    public void setVertical(int vertical) {
+        this.vertical = vertical;
     }
 }

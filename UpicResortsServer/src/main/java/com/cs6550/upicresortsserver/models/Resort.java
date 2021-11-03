@@ -1,39 +1,45 @@
 package com.cs6550.upicresortsserver.models;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Objects;
 
 @Entity
+@Table(name ="resorts")
 public class Resort {
-    private @Id @GeneratedValue(strategy = GenerationType.AUTO) Long resortId;
-    private String resortName;
-    private @ManyToMany Set<Season> seasons;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int resortId;
 
-    public Resort(Long resortId, String resortName) {
-        this.resortId = resortId;
-        this.resortName = resortName;
-        this.seasons = new HashSet<>();
-    }
+    private String resortName;
 
     public Resort() {}
 
-    public Long getResortId() {
+    public int getResortId() {
         return resortId;
+    }
+
+    public void setResortId(int resortId) {
+        this.resortId = resortId;
     }
 
     public String getResortName() {
         return resortName;
     }
 
-    public Set<Season> getSeasons() {
-        return Collections.unmodifiableSet(seasons);
+    public void setResortName(String resortName) {
+        this.resortName = resortName;
     }
 
-    /*TODO - this should be moved to services*/
-    public void addSeason(Season season) {
-        assert seasons != null : "Internal error. Season list for " + resortId + " has not been initialized.";
-        seasons.add(season);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Resort resort = (Resort) o;
+        return Objects.equals(resortId, resort.resortId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(resortId);
     }
 }

@@ -1,19 +1,14 @@
 package com.cs6550.upicresortsserver.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Skier {
-    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) int skierId;
-    private String skierName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int skierId;
 
-    public Skier(int skierId, String skierName) {
-        this.skierId = skierId;
-        this.skierName = skierName;
-    }
+    private String skierName;
 
     public Skier() {}
 
@@ -21,7 +16,15 @@ public class Skier {
         return skierId;
     }
 
+    public void setSkierId(int skierId) {
+        this.skierId = skierId;
+    }
+
     public String getSkierName() {
         return skierName;
+    }
+
+    public void setSkierName(String skierName) {
+        this.skierName = skierName;
     }
 }

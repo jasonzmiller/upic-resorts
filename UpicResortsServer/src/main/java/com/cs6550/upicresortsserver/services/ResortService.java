@@ -11,9 +11,9 @@ import java.util.List;
 public class ResortService {
 
     @Autowired
-    ResortRepository repository;
+    ResortRepository resortRepository;
 
     public List<Resort> getResorts() {
-        return (List<Resort>) repository.findAll();
+        return (List<Resort>) resortRepository.findAll();
     }
 }

@@ -10,7 +10,6 @@
     </parent>
     <groupId>com.cs6550</groupId>
     <artifactId>UpicResortsServer</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>UpicResortsServer</name>
     <description>UpicResortsServer</description>
@@ -22,7 +21,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -44,7 +42,6 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>2.5.5</version>
         </dependency>
-
     </dependencies>
 
     <build>
