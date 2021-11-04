@@ -4,6 +4,7 @@ import com.cs6550.upicresortsserver.models.LiftRide;
 import com.cs6550.upicresortsserver.models.LiftRideRequest;
 import com.cs6550.upicresortsserver.services.LiftRideService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,15 +14,15 @@ public class LiftRideController {
     private LiftRideService service;
 
     @GetMapping("/skiers/{resortId}/seasons/{seasonId}/days/{dayId}/skiers/{skierId}")
-    public int getSkierDayVertical(@PathVariable("resortId") String resortId,
-                                        @PathVariable String dayId,
-                                        @PathVariable String seasonId,
-                                        @PathVariable String skierId) {
+    public ResponseEntity<Integer> getSkierDayVertical(@PathVariable("resortId") String resortId,
+                                              @PathVariable("dayId") String dayId,
+                                              @PathVariable("seasonId") String seasonId,
+                                              @PathVariable("skierId") String skierId) {
         return service.getSkierDayVertical(resortId, dayId, seasonId, skierId);
     }
 
     @PostMapping("/skiers/{resortId}/seasons/{seasonId}/days/{dayId}/skiers/{skierId}")
-    public LiftRide writeNewLiftRide(@PathVariable("resortId") String resortId,
+    public ResponseEntity<LiftRide> writeNewLiftRide(@PathVariable("resortId") String resortId,
                                      @PathVariable("seasonId") String seasonId,
                                      @PathVariable("dayId") String dayId,
                                      @PathVariable("skierId") String skierId,

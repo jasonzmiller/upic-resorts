@@ -2,13 +2,11 @@ package com.cs6550.upicresortsserver.controllers;
 
 import com.cs6550.upicresortsserver.models.Resort;
 import com.cs6550.upicresortsserver.models.ResortSeasons;
+import com.cs6550.upicresortsserver.models.ResortsList;
 import com.cs6550.upicresortsserver.services.ResortService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 public class ResortController {
@@ -17,13 +15,12 @@ public class ResortController {
     private ResortService service;
 
     @GetMapping("/resorts")
-    @ResponseStatus(code = HttpStatus.OK, reason = "Successful operation, empty list if no data")
-    public List<Resort> getResorts() {
+    public ResponseEntity<ResortsList> getResorts() {
         return service.getResorts();
     }
 
     @GetMapping("/resorts/{resortId}/seasons")
-    public ResortSeasons getResortSeasons() {
-        return new ResortSeasons(Arrays.asList("2021"));
+    public ResponseEntity<ResortSeasons> getResortSeasons(@PathVariable("resortId") String resortId) {
+        return service.getResortSeasons(resortId);
     }
 }

@@ -6,5 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 public interface LiftRideRepository extends CrudRepository<LiftRide, Integer> {
     // TODO - QUERY
     // TODO - Param("resortId") in parameters below
-    int getSkierDayVertical(String resortId, String dayId, String seasonId, String skierId);
+    default int getSkierDayVertical(String resortId, String dayId, String seasonId, String skierId) {
+        return 0;
+    }
 }
