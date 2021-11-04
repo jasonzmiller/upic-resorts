@@ -19,8 +19,14 @@ public class LiftRideService {
     TODO - 200: successful operation
            400: invalid inputs supplied - BadRequestException
            404: data not found - EntityNotFoundException
+
+           resortId: int between 1-8
+           dayId: string representation of int 1-366
+           seasonId: string representation of "2021"
+           skierId: int
      */
     public ResponseEntity<Integer> getSkierDayVertical(String resortId, String dayId, String seasonId, String skierId) throws EntityNotFoundException {
+
         if (!resortId.equalsIgnoreCase("2021")) throw new EntityNotFoundException("Data not found");
         ResponseEntity<Integer> res = new ResponseEntity<>(
                 liftRideRepository.getSkierDayVertical(
@@ -36,6 +42,13 @@ public class LiftRideService {
     TODO - 201: write successful - CREATED
            400: invalid inputs supplied - BadRequestException
            404: data not found - EntityNotFoundException
+
+           resortId: int between 1-8
+           dayId: string representation of int 1-366
+           seasonId: string representation of "2021"
+           skierId: int
+           liftRideRequest.time: int
+           liftRideRequest.liftId: int
      */
     public ResponseEntity<LiftRide> writeNewLiftRide(String resortId, String dayId, String seasonId, String skierId, LiftRideRequest liftRideRequest) {
         LiftRide liftRide = new LiftRide();
@@ -49,4 +62,6 @@ public class LiftRideService {
         liftRideRepository.save(liftRide);
         return new ResponseEntity<>(liftRide, HttpStatus.CREATED);
     }
+
+
 }
