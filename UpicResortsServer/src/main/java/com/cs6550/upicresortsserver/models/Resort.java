@@ -7,7 +7,7 @@ import java.util.Objects;
 @Table(name ="resorts")
 public class Resort {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int resortId;
 
     private String resortName;

@@ -26,10 +26,12 @@ public class ResortService {
     }
 
     /*
-    TODO - 400: Invalid Resort ID supplied
-                    ResortId is invalid if it is not 1 - 8
-                        1. check if it can be parsed as an integer
-                        2. check if the integer is between 1-8
+    tests:
+    /resorts/notnumeric/seasons - 400
+    /resorts/0/seasons          - 400
+    /resorts/6/seasons          - 400
+    /resorts/1/seasons          - 200
+    cannot test EntityNotFoundException (404) because assume all resorts are already stored in DB
 
      */
     public ResponseEntity<ResortSeasons> getResortSeasons(String resortId) throws BadRequestException, EntityNotFoundException {
@@ -39,8 +41,8 @@ public class ResortService {
         } catch (IllegalArgumentException ex) {
             throw new BadRequestException("Invalid Resort ID: ID must be numeric.");
         }
-        if (id < 1 || id > 8)
-            throw new BadRequestException("Invalid Resort ID: ID must be a numeric value between 1 and 8.");
+        if (id < 1 || id > 5)
+            throw new BadRequestException("Invalid Resort ID: ID must be a numeric value between 1 and 5.");
         if (!resortRepository.existsById(id))
              throw new EntityNotFoundException("Resort with ID: " + resortId + " not found.");
         return new ResponseEntity<>(new ResortSeasons(Arrays.asList("2021")), HttpStatus.OK);

@@ -1,6 +1,5 @@
 package com.cs6550.upicresortsserver.controllers;
 
-import com.cs6550.upicresortsserver.models.Resort;
 import com.cs6550.upicresortsserver.models.ResortSeasons;
 import com.cs6550.upicresortsserver.models.ResortsList;
 import com.cs6550.upicresortsserver.services.ResortService;

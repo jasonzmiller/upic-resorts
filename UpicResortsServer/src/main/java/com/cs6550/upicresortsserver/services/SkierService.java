@@ -20,4 +20,16 @@ public class SkierService {
     public Skier getSkierById(String skierId) {
         return repository.findById(Integer.parseInt(skierId)).get();
     }
+
+    public Optional<Skier> getSkierById(int skierId) {
+        return repository.findById(skierId);
+    }
+
+    public void createSkierIfAbsent(int skierId) {
+        Optional<Skier> optSkier = repository.findById(skierId);
+        if (optSkier.isEmpty()) {
+            Skier skier = new Skier(skierId);
+            repository.save(skier);
+        }
+    }
 }
