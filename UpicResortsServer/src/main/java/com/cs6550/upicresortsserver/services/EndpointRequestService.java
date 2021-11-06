@@ -15,15 +15,11 @@ public class EndpointRequestService {
         return endpointRequestRepository.save(endpointRequest);
     }
 
-    public long findMaxLatencyTime(String requestType) {
-        return endpointRequestRepository.findMaxLatencyTime(requestType);
-    }
-    
-    public long findAverageLatencyTime(String requestType) {
-        return endpointRequestRepository.findAverageLatencyTime(requestType);
-    }
-
     public Iterable<EndpointRequest> findAllByRequestType(String requestType) {
         return endpointRequestRepository.findAllByRequestType(requestType);
+    }
+
+    public void deleteAllStoredRequests() {
+        endpointRequestRepository.deleteAll();
     }
 }

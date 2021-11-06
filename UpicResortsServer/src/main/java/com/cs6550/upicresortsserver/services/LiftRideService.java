@@ -31,29 +31,17 @@ public class LiftRideService {
            seasonId: string representation of "2021"
            skierId: int
      */
-    public ResponseEntity<Integer> getSkierDayVertical(String resortId, String dayId, String seasonId, String skierId) throws EntityNotFoundException {
+    public ResponseEntity<Integer> getSkierDayVertical(String resortId, String dayId, String seasonId, String skierId) {
         validateInput(resortId, dayId, seasonId, skierId);
-//        List<LiftRide> liftRides = (List<LiftRide>) liftRideRepository.findAll();
-//        List<LiftRide> liftRidesForSkier = liftRides
-//                .stream()
-//                .filter(liftRide -> liftRide.getResortId() == Integer.parseInt(resortId) && liftRide.getDayId().equals(dayId) && liftRide.getSkierId() == Integer.parseInt(skierId))
-//                .collect(Collectors.toList());
         List<LiftRide> liftRidesForSkier = liftRideRepository.findLiftRidesByIds(Integer.parseInt(resortId), dayId, Integer.parseInt(skierId));
+        if (liftRidesForSkier.isEmpty()) throw new EntityNotFoundException("Data not found.");
         int totalVertical = 0;
         for (LiftRide ride : liftRidesForSkier) {
             totalVertical += ride.getVertical();
         }
-        if (totalVertical == 0) throw new EntityNotFoundException("data not found");
         ResponseEntity<Integer> res = new ResponseEntity<>(
                 totalVertical,
                 HttpStatus.OK);
-//        ResponseEntity<Integer> res = new ResponseEntity<>(
-//                liftRideRepository.getSkierDayVertical(
-//                        resortId,
-//                        dayId,
-//                        seasonId,
-//                        skierId),
-//                HttpStatus.OK);
         return res;
     }
 
@@ -74,8 +62,15 @@ public class LiftRideService {
      */
     public ResponseEntity<LiftRide> writeNewLiftRide(String resortId, String dayId, String seasonId, String skierId, LiftRideRequest liftRideRequest) {
         validateInput(resortId, dayId, seasonId, skierId, liftRideRequest);
+        if (liftRideRepository.findLiftRideBy(
+                Integer.parseInt(resortId),
+                dayId,
+                Integer.parseInt(skierId),
+                liftRideRequest.getLiftId(),
+                liftRideRequest.getTime()) != null) throw new BadRequestException("This lift ride already exists.");
         skierService.createSkierIfAbsent(Integer.parseInt(skierId));
         LiftRide liftRide = buildNewLiftRide(resortId, dayId, seasonId, skierId, liftRideRequest);
+
         liftRideRepository.save(liftRide);
         return new ResponseEntity<>(liftRide, HttpStatus.CREATED);
     }
@@ -90,6 +85,10 @@ public class LiftRideService {
         liftRide.setLiftId(liftRideRequest.getLiftId());
         liftRide.setVertical(10 * liftRideRequest.getLiftId()); // for lift N (N=1...8) at each resort, assume vertical distance is 10N
         return liftRide;
+    }
+
+    public void deleteAll() {
+        liftRideRepository.deleteAll();
     }
 
     /*
