@@ -12,9 +12,9 @@ public class UpicResortsServerApplication {
         SpringApplication.run(UpicResortsServerApplication.class, args);
     }
 
-    @Bean
-    public CommandLineRunner demo() {
-        return args -> {};
-    }
+//    @Bean
+//    public CommandLineRunner demo() {
+//        return args -> {};
+//    }
 
 }

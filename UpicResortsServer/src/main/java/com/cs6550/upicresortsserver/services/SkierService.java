@@ -11,7 +11,7 @@ import java.util.Optional;
 public class SkierService {
 
     @Autowired
-    SkierRepository repository;
+    private SkierRepository repository;
 
     public Skier createSkier(Skier skier) {
         return repository.save(skier);

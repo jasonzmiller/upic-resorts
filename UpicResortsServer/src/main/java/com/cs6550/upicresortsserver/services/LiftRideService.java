@@ -11,16 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LiftRideService {
 
     @Autowired
-    LiftRideRepository liftRideRepository;
+    private LiftRideRepository liftRideRepository;
 
     @Autowired
-    SkierService skierService;
+    private SkierService skierService;
 
     /*
     TODO - 200: successful operation
@@ -34,11 +33,12 @@ public class LiftRideService {
      */
     public ResponseEntity<Integer> getSkierDayVertical(String resortId, String dayId, String seasonId, String skierId) throws EntityNotFoundException {
         validateInput(resortId, dayId, seasonId, skierId);
-        List<LiftRide> liftRides = (List<LiftRide>) liftRideRepository.findAll();
-        List<LiftRide> liftRidesForSkier = liftRides
-                .stream()
-                .filter(liftRide -> liftRide.getResortId() == Integer.parseInt(resortId) && liftRide.getDayId().equals(dayId) && liftRide.getSkierId() == Integer.parseInt(skierId))
-                .collect(Collectors.toList());
+//        List<LiftRide> liftRides = (List<LiftRide>) liftRideRepository.findAll();
+//        List<LiftRide> liftRidesForSkier = liftRides
+//                .stream()
+//                .filter(liftRide -> liftRide.getResortId() == Integer.parseInt(resortId) && liftRide.getDayId().equals(dayId) && liftRide.getSkierId() == Integer.parseInt(skierId))
+//                .collect(Collectors.toList());
+        List<LiftRide> liftRidesForSkier = liftRideRepository.findLiftRidesByIds(Integer.parseInt(resortId), dayId, Integer.parseInt(skierId));
         int totalVertical = 0;
         for (LiftRide ride : liftRidesForSkier) {
             totalVertical += ride.getVertical();

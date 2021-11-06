@@ -18,7 +18,7 @@ import java.util.List;
 public class ResortService {
 
     @Autowired
-    ResortRepository resortRepository;
+    private ResortRepository resortRepository;
 
     public ResponseEntity<ResortsList> getResorts() {
         List<Resort> resorts = (List<Resort>) resortRepository.findAll();
