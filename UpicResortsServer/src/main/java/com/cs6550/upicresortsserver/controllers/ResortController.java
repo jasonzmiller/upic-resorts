@@ -20,9 +20,13 @@ public class ResortController {
 
     @GetMapping("/resorts")
     public ResponseEntity<ResortsList> getResorts() {
-        Long startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
         ResponseEntity<ResortsList> response = resortService.getResorts();
-        endpointRequestService.createNewEndpointRequest(new EndpointRequest("GET", System.currentTimeMillis() - startTime, "/resorts"));
+        endpointRequestService.createNewEndpointRequest(
+                new EndpointRequest(
+                        "GET",
+                        System.currentTimeMillis() - startTime,
+                        "/resorts"));
         return response;
     }
 

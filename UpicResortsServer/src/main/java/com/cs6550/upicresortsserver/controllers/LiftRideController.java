@@ -8,7 +8,6 @@ import com.cs6550.upicresortsserver.services.LiftRideService;
 import com.cs6550.upicresortsserver.utils.Authentication;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -19,21 +19,37 @@ public class StatisticService {
 
     public ResponseEntity<EndpointStatisticList> getStatistics() {
         List<EndpointStatistic> stats = new LinkedList<>();
-        stats.add(new EndpointStatistic(
-                "resorts",
-                "GET",
-                findMaxLatencyTimeGetRequests(),
-                findMaxLatencyTimeGetRequests()
-        ));
+        Iterable<EndpointRequest> getRequests = endpointRequestService.findAllByRequestType("GET");
+        if (((List<EndpointRequest>) getRequests).size() > 0) {
+            stats.add(new EndpointStatistic(
+                    "resorts",
+                    "GET",
+                    findAverageLatencyTimeRequests(getRequests),
+                    findMaxLatencyTimeRequests(getRequests)
+            ));
+        }
         return new ResponseEntity<>(new EndpointStatisticList(stats), HttpStatus.OK);
     }
 
-    private long findMaxLatencyTimeGetRequests() {
-        Iterable<EndpointRequest> requests = endpointRequestService.findAllByRequestType("GET");
-        long maxLatency = 0;
+    public void clearAllStatistics() {
+        endpointRequestService.deleteAllStoredRequests();
+    }
+
+    private long findMaxLatencyTimeRequests(Iterable<EndpointRequest> requests) {
+        long maxLatency = -1L;
         for (EndpointRequest req : requests) {
-            maxLatency += req.getLatencyTime();
+            if (maxLatency < req.getLatencyTime()) maxLatency = req.getLatencyTime();
         }
         return maxLatency;
+    }
+
+    private long findAverageLatencyTimeRequests(Iterable<EndpointRequest> requests) {
+        int numRequests = ((List<EndpointRequest>) requests).size();
+        numRequests = numRequests == 0 ? 1 : numRequests;
+        long totalLatency = 0L;
+        for (EndpointRequest req : requests) {
+            totalLatency += req.getLatencyTime();
+        }
+        return totalLatency / ((List<EndpointRequest>) requests).size();
     }
 }

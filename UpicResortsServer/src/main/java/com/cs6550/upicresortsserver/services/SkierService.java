@@ -11,25 +11,29 @@ import java.util.Optional;
 public class SkierService {
 
     @Autowired
-    private SkierRepository repository;
+    private SkierRepository skierRepository;
 
     public Skier createSkier(Skier skier) {
-        return repository.save(skier);
+        return skierRepository.save(skier);
     }
 
     public Skier getSkierById(String skierId) {
-        return repository.findById(Integer.parseInt(skierId)).get();
+        return skierRepository.findById(Integer.parseInt(skierId)).get();
     }
 
     public Optional<Skier> getSkierById(int skierId) {
-        return repository.findById(skierId);
+        return skierRepository.findById(skierId);
     }
 
     public void createSkierIfAbsent(int skierId) {
-        Optional<Skier> optSkier = repository.findById(skierId);
+        Optional<Skier> optSkier = skierRepository.findById(skierId);
         if (optSkier.isEmpty()) {
             Skier skier = new Skier(skierId);
-            repository.save(skier);
+            skierRepository.save(skier);
         }
+    }
+
+    public void deleteAll() {
+        skierRepository.deleteAll();
     }
 }
