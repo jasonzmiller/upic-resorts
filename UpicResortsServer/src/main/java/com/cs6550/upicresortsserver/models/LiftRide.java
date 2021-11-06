@@ -3,7 +3,7 @@ package com.cs6550.upicresortsserver.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "liftrides")
+@Table(name = "lift_rides")
 public class LiftRide {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -87,5 +87,9 @@ public class LiftRide {
 
     public void setVertical(int vertical) {
         this.vertical = vertical;
+    }
+
+    public boolean hasMatchingIds(int resortId, String dayId, int skierId) {
+        return this.resortId == resortId && this.dayId.equals(dayId) && this.skierId == skierId;
     }
 }
