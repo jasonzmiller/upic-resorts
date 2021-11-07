@@ -88,8 +88,10 @@ public class Client {
 
 
   public static void main(String[] args) throws InterruptedException {
-    Client client = new Client();
-    if (args.length == 4) {
+    Logger.getRootLogger()
+        .addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+    Client client = null;
+    if (args.length == 5) {
       client = new Client(
           Integer.parseInt(args[0]),
           Integer.parseInt(args[1]),
@@ -97,8 +99,14 @@ public class Client {
           Integer.parseInt(args[3]),
           args[4]);
     }
-    Logger.getRootLogger()
-        .addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+    else
+    {
+      System.out.println("invalid params ");
+      for (String arg : args){
+        System.out.println(arg);
+      }
+      System.exit(0);
+    }
     final int skiersPerThread = client.numSkiers / client.numThreads;
     final Random random = new Random();
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());

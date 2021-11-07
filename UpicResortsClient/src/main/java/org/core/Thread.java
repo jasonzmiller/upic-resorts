@@ -42,7 +42,7 @@ public class Thread implements Runnable {
     try {
       for (int j = 0; j < this.client.numRuns * coefficient * skiersPerThread; j++) {
         //creating random skier id for EACH thread
-        int skierId = (random.nextInt(this.client.numSkiers) + j * this.skiersPerThread) + 1;
+        int skierId = random.nextInt(this.client.numSkiers) + 1;
 
         //choosing a random liftID
         int liftId = random.nextInt(this.client.numLifts);
