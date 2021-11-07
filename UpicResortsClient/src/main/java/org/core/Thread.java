@@ -56,7 +56,7 @@ public class Thread implements Runnable {
           String url = Client.IP + URL_CORE + skierId;
           url = url.replace("%resort_id%", "" + resortId);
           String messageBody = String.format("{\"liftId\" : %d, \"time\" : %d}", liftId, time);
-          logger.info("Calling url " + url + "\n with body - " + messageBody);
+          //logger.debug("Calling url " + url + "\n with body - " + messageBody);
           HttpResponse<String> res = doPost(httpClient, url, messageBody);
           if (res.statusCode() == 201) {
             client.testSuccess();

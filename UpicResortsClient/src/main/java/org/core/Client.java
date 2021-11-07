@@ -18,7 +18,7 @@ public class Client {
   public int numLifts = 40;
   public int numRuns = 20;
 
-  public static String IP = "http://localhost:8080";
+  public static String IP = "http://18.217.235.143:8080/UpicResortsServer-2.5.6";
 
   //phase 2 starts after 10% of part 1 is finished
   public final CountDownLatch phase1;
@@ -57,6 +57,10 @@ public class Client {
     this.numLifts = numLifts;
     this.numRuns = numRuns;
     this.IP = ip;
+    String output = String
+        .format("NumThreads = %d, numSkiers = %d, numLifts = %d", this.numThreads,
+            this.numSkiers, this.numLifts);
+    logger.info("Initialized with " + output);
     //phase 2 starts after 10% of part 1 is finished
     phase1 = new CountDownLatch(numThreads / 4 / 10);
 
@@ -93,7 +97,6 @@ public class Client {
           Integer.parseInt(args[3]),
           args[4]);
     }
-    //client = new Client(1, 1, 16, 1, Client.IP);
     Logger.getRootLogger()
         .addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
     final int skiersPerThread = client.numSkiers / client.numThreads;
