@@ -15,18 +15,10 @@ public class ResortController {
     @Autowired
     private ResortService resortService;
 
-    @Autowired
-    private EndpointRequestService endpointRequestService;
 
     @GetMapping("/resorts")
     public ResponseEntity<ResortsList> getResorts() {
-        long startTime = System.currentTimeMillis();
         ResponseEntity<ResortsList> response = resortService.getResorts();
-        endpointRequestService.createNewEndpointRequest(
-                new EndpointRequest(
-                        "GET",
-                        System.currentTimeMillis() - startTime,
-                        "/resorts"));
         return response;
     }
 
