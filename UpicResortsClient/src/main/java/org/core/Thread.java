@@ -65,6 +65,11 @@ public class Thread implements Runnable {
             logger.error("Failure: " + client.getFailure() + "\n caused by :" + res.body());
           }
 
+          // make a get request immediately
+          HttpResponse<String> getRes = doGet(httpClient, url);
+          if (res.statusCode() >= 400) {
+            logger.error("Failure: GET request " + client.getFailure() + "\n caused by :" + res.body() + " url - " + url);
+          }
 
         } catch (Exception e) {
           client.testFailure();
