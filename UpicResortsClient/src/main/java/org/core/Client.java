@@ -18,7 +18,7 @@ public class Client {
   public int numLifts = 40;
   public int numRuns = 20;
 
-  public static String IP = "http://18.217.235.143:8080/UpicResortsServer-2.5.6";
+  public static String IP = "http://3.15.180.159:8080/UpicResortsServer-2.5.6";
 
   //phase 2 starts after 10% of part 1 is finished
   public final CountDownLatch phase1;
