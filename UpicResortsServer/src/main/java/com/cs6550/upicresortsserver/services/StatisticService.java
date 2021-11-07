@@ -22,10 +22,19 @@ public class StatisticService {
         Iterable<EndpointRequest> getRequests = endpointRequestService.findAllByRequestType("GET");
         if (((List<EndpointRequest>) getRequests).size() > 0) {
             stats.add(new EndpointStatistic(
-                    "resorts",
+                    "skiers",
                     "GET",
                     findAverageLatencyTimeRequests(getRequests),
                     findMaxLatencyTimeRequests(getRequests)
+            ));
+        }
+        Iterable<EndpointRequest> postRequests = endpointRequestService.findAllByRequestType("POST");
+        if (((List<EndpointRequest>) postRequests).size() > 0) {
+            stats.add(new EndpointStatistic(
+                "skiers",
+                "POST",
+                findAverageLatencyTimeRequests(postRequests),
+                findMaxLatencyTimeRequests(postRequests)
             ));
         }
         return new ResponseEntity<>(new EndpointStatisticList(stats), HttpStatus.OK);
