@@ -23,4 +23,6 @@ public interface LiftRideRepository extends CrudRepository<LiftRide, Integer> {
                             @Param("skierId") int skierId,
                             @Param("liftId") int liftId,
                             @Param("time") int time);
+
+    List<LiftRide> findLiftRidesForSkier(int skierId);
 }

@@ -4,6 +4,7 @@ import com.cs6550.upicresortsserver.exceptions.BadRequestException;
 import com.cs6550.upicresortsserver.exceptions.EntityNotFoundException;
 import com.cs6550.upicresortsserver.models.LiftRide;
 import com.cs6550.upicresortsserver.models.LiftRideRequest;
+import com.cs6550.upicresortsserver.models.LiftRidesList;
 import com.cs6550.upicresortsserver.repositories.LiftRideRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,17 @@ public class LiftRideService {
     @Autowired
     private SkierService skierService;
 
+    public ResponseEntity<LiftRidesList> getLiftRides() {
+        List<LiftRide> rides = (List<LiftRide>) liftRideRepository.findAll();
+        return new ResponseEntity<>(new LiftRidesList(rides), HttpStatus.OK);
+    }
+
+    // TODO - error messages
+    public ResponseEntity<LiftRidesList> getLiftRides(String skierId) {
+        List<LiftRide> rides = (List<LiftRide>) liftRideRepository.findLiftRidesForSkier(Integer.parseInt(skierId));
+        return new ResponseEntity<>(new LiftRidesList(rides), HttpStatus.OK);
+    }
+
     /*
     TODO - 200: successful operation
            400: invalid inputs supplied - BadRequestException
@@ -36,9 +48,9 @@ public class LiftRideService {
         List<LiftRide> liftRidesForSkier = liftRideRepository.findLiftRidesByIds(Integer.parseInt(resortId), dayId, Integer.parseInt(skierId));
         if (liftRidesForSkier.isEmpty()) throw new EntityNotFoundException("Data not found.");
         int totalVertical = 0;
-        for (LiftRide ride : liftRidesForSkier) {
-            totalVertical += ride.getVertical();
-        }
+//        for (LiftRide ride : liftRidesForSkier) {
+//            totalVertical += ride.getVertical();
+//        }
         ResponseEntity<Integer> res = new ResponseEntity<>(
                 totalVertical,
                 HttpStatus.OK);
@@ -83,7 +95,7 @@ public class LiftRideService {
         liftRide.setSkierId(Integer.parseInt(skierId));
         liftRide.setTime(liftRideRequest.getTime());
         liftRide.setLiftId(liftRideRequest.getLiftId());
-        liftRide.setVertical(10 * liftRideRequest.getLiftId()); // for lift N (N=1...8) at each resort, assume vertical distance is 10N
+        // liftRide.setVertical(10 * liftRideRequest.getLiftId()); // for lift N (N=1...8) at each resort, assume vertical distance is 10N
         return liftRide;
     }
 

@@ -5,6 +5,7 @@ import com.cs6550.upicresortsserver.exceptions.InvalidCredentialsException;
 import com.cs6550.upicresortsserver.models.EndpointRequest;
 import com.cs6550.upicresortsserver.models.LiftRide;
 import com.cs6550.upicresortsserver.models.LiftRideRequest;
+import com.cs6550.upicresortsserver.models.LiftRidesList;
 import com.cs6550.upicresortsserver.services.EndpointRequestService;
 import com.cs6550.upicresortsserver.services.LiftRideService;
 import com.cs6550.upicresortsserver.utils.Authentication;
@@ -21,6 +22,18 @@ public class LiftRideController {
 
     @Autowired
     private EndpointRequestService endpointRequestService;
+
+    // TODO - "url" : "liftrides/{liftRideId}" - make sure {liftRideID} is added in POST method
+    // TODO -
+    @GetMapping("/liftrides")
+    public ResponseEntity<LiftRidesList> getAllLiftRides(@RequestParam(required = false, name = "skier") String skierId) {
+        ResponseEntity<LiftRidesList> response = null;
+        if (skierId == null) response = service.getLiftRides();
+        else {
+            service.getLiftRides(skierId);
+        }
+        return response;
+    }
 
     @GetMapping("/skiers/{resortId}/seasons/{seasonId}/days/{dayId}/skiers/{skierId}")
     public ResponseEntity<Integer> getSkierDayVertical(@PathVariable("resortId") String resortId,
