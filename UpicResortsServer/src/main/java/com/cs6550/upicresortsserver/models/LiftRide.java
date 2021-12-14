@@ -21,9 +21,11 @@ public class LiftRide {
 
     private int liftId;
 
-    private int vertical;
+    private String url;
 
-    public LiftRide() {}
+    public LiftRide() {
+        this.url = "/liftrides/";
+    }
 
     public int getLiftRideId() {
         return liftRideId;
@@ -81,12 +83,12 @@ public class LiftRide {
         this.liftId = liftId;
     }
 
-    public int getVertical() {
-        return vertical;
+    public String getUrl() {
+        return url;
     }
 
-    public void setVertical(int vertical) {
-        this.vertical = vertical;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public boolean hasMatchingIds(int resortId, String dayId, int skierId) {
