@@ -24,39 +24,17 @@ public class LiftRideController {
     private EndpointRequestService endpointRequestService;
 
     // TODO - "url" : "liftrides/{liftRideId}" - make sure {liftRideID} is added in POST method
-    // TODO -
     @GetMapping("/liftrides")
     public ResponseEntity<LiftRidesList> getAllLiftRides(@RequestParam(required = false, name = "skier") String skierId) {
-        ResponseEntity<LiftRidesList> response = null;
+        ResponseEntity<LiftRidesList> response;
         if (skierId == null) response = service.getLiftRides();
-        else {
-            service.getLiftRides(skierId);
-        }
+        else response = service.getLiftRides(skierId);
         return response;
     }
 
-    @GetMapping("/skiers/{resortId}/seasons/{seasonId}/days/{dayId}/skiers/{skierId}")
-    public ResponseEntity<Integer> getSkierDayVertical(@PathVariable("resortId") String resortId,
-                                              @PathVariable("dayId") String dayId,
-                                              @PathVariable("seasonId") String seasonId,
-                                              @PathVariable("skierId") String skierId) {
-        long startTime = System.currentTimeMillis();
-        ResponseEntity<Integer> response = service.getSkierDayVertical(resortId, dayId, seasonId, skierId);
-        endpointRequestService.createNewEndpointRequest(
-            new EndpointRequest(
-                "GET",
-                System.currentTimeMillis() - startTime,
-                "/skiers"));
-        return response;
-    }
-
-    @PostMapping("/skiers/{resortId}/seasons/{seasonId}/days/{dayId}/skiers/{skierId}")
+    @PostMapping("/liftrides")
     public ResponseEntity<LiftRide> writeNewLiftRide(@RequestHeader Map<String, String> headers,
-                                     @PathVariable("resortId") String resortId,
-                                     @PathVariable("seasonId") String seasonId,
-                                     @PathVariable("dayId") String dayId,
-                                     @PathVariable("skierId") String skierId,
-                                     @RequestBody LiftRideRequest liftRideRequest) {
+                                                     @RequestBody LiftRideRequest liftRideRequest) {
         long startTime = System.currentTimeMillis();
         String authorization = headers.get("authorization");
         ResponseEntity<LiftRide> response = null;
@@ -66,15 +44,19 @@ public class LiftRideController {
         }
         if (Authentication.checkBasicAuth(authorization))
         {
-          response = service.writeNewLiftRide(resortId, dayId, seasonId, skierId, liftRideRequest);
+            response = service.writeNewLiftRide(
+                    liftRideRequest.getResort(),
+                    liftRideRequest.getSkier(),
+                    liftRideRequest.getLift(),
+                    liftRideRequest.getTime());
         }
         if (response != null)
         {
             endpointRequestService.createNewEndpointRequest(
-                new EndpointRequest(
-                    "POST",
-                    System.currentTimeMillis() - startTime,
-                    "/skiers"));
+                    new EndpointRequest(
+                            "POST",
+                            System.currentTimeMillis() - startTime,
+                            "/skiers"));
             return response;
         }
         throw new InvalidCredentialsException();
