@@ -9,13 +9,9 @@ public class LiftRide {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int liftRideId;
 
-    private int resortId;
+    private int resort;
 
-    private String seasonId;
-
-    private String dayId;
-
-    private int skierId;
+    private int skier;
 
     private int time;
 
@@ -27,6 +23,13 @@ public class LiftRide {
         this.url = "/liftrides/";
     }
 
+    public LiftRide(int resort, int skier, int time, int liftId) {
+        this.resort = resort;
+        this.skier = skier;
+        this.time = time;
+        this.liftId = liftId;
+    }
+
     public int getLiftRideId() {
         return liftRideId;
     }
@@ -35,36 +38,20 @@ public class LiftRide {
         this.liftRideId = liftRideId;
     }
 
-    public int getResortId() {
-        return resortId;
+    public int getResort() {
+        return resort;
     }
 
-    public void setResortId(int resortId) {
-        this.resortId = resortId;
+    public void setResort(int resort) {
+        this.resort = resort;
     }
 
-    public String getSeasonId() {
-        return seasonId;
+    public int getSkier() {
+        return skier;
     }
 
-    public void setSeasonId(String seasonId) {
-        this.seasonId = seasonId;
-    }
-
-    public String getDayId() {
-        return dayId;
-    }
-
-    public void setDayId(String dayId) {
-        this.dayId = dayId;
-    }
-
-    public int getSkierId() {
-        return skierId;
-    }
-
-    public void setSkierId(int skierId) {
-        this.skierId = skierId;
+    public void setSkier(int skier) {
+        this.skier = skier;
     }
 
     public int getTime() {
@@ -89,9 +76,5 @@ public class LiftRide {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public boolean hasMatchingIds(int resortId, String dayId, int skierId) {
-        return this.resortId == resortId && this.dayId.equals(dayId) && this.skierId == skierId;
     }
 }
