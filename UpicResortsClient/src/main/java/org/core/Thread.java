@@ -65,7 +65,7 @@ public class Thread implements Runnable {
           //adding client latency
           int startTimePost = (int) System.currentTimeMillis();
           HttpResponse<String> res = doPost(httpClient, url, messageBody);
-          client.update((int) System.currentTimeMillis() - startTimePost);
+          client.updatePOST((int) System.currentTimeMillis() - startTimePost);
 
           if (res.statusCode() == 201) {
             client.testSuccess();
@@ -77,7 +77,7 @@ public class Thread implements Runnable {
           // make a get request immediately
           int startTimeGet = (int) System.currentTimeMillis();
           HttpResponse<String> getRes = doGet(httpClient, url);
-          client.update((int) System.currentTimeMillis() - startTimeGet);
+          client.updateGET((int) System.currentTimeMillis() - startTimeGet);
 
           if (res.statusCode() >= 400) {
             logger.error("Failure: GET request " + client.getFailure() + "\n caused by :" + getRes.body() + " url - " + url);

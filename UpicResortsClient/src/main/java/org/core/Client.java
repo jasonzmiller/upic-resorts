@@ -29,14 +29,25 @@ public class Client {
   public int failure = 0;
 
   //histogram implementation
-  int[] histogram = new int[500];
+  int[] histogramGET = new int[500];
+  int[] histogramPOST = new int[500];
+  int[] histogramALL = new int[500];
   int over_5s;
 
-  public void update(int millis) {
+  public void updateGET(int millis) {
     if (millis >= 5000) {
       over_5s++;
     } else {
-      histogram[millis/10]++;
+      histogramGET[millis/10]++;
+      histogramALL[millis/10]++;
+    }
+  }
+  public void updatePOST(int millis) {
+    if (millis >= 5000) {
+      over_5s++;
+    } else {
+      histogramPOST[millis/10]++;
+      histogramALL[millis/10]++;
     }
   }
 
@@ -138,7 +149,8 @@ public class Client {
         logger.info("Configuration - " + output);
         logger.info("Success " + finalClient.success);
         logger.info("failure " + finalClient.failure);
-        logger.info("average request length " + finalClient.findAvg(finalClient.histogram));
+        logger.info("average request length for POST" + finalClient.findAvg(finalClient.histogramPOST));
+        logger.info("average request length for GET" + finalClient.findAvg(finalClient.histogramGET));
         logger.info("total time " + (afterPhase3 - startupTime) / 1000.0 + " seconds.");
 
         System.exit(0);
