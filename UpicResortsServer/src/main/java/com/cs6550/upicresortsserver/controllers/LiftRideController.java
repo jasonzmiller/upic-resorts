@@ -10,6 +10,8 @@ import com.cs6550.upicresortsserver.services.EndpointRequestService;
 import com.cs6550.upicresortsserver.services.LiftRideService;
 import com.cs6550.upicresortsserver.utils.Authentication;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +25,17 @@ public class LiftRideController {
     @Autowired
     private EndpointRequestService endpointRequestService;
 
+    Logger logger = LoggerFactory.getLogger(LiftRideController.class);
+
+
     // TODO - "url" : "liftrides/{liftRideId}" - make sure {liftRideID} is added in POST method
     @GetMapping("/liftrides")
     public ResponseEntity<LiftRidesList> getAllLiftRides(@RequestParam(required = false, name = "skier") String skierId) {
+        long startTime = System.currentTimeMillis();
         ResponseEntity<LiftRidesList> response;
         if (skierId == null) response = service.getLiftRides();
         else response = service.getLiftRides(skierId);
+        logger.info("GET request for skierId " + (skierId == null ? "All" : skierId) + " - " + (System.currentTimeMillis() - startTime));
         return response;
     }
 
@@ -52,13 +59,10 @@ public class LiftRideController {
         }
         if (response != null)
         {
-            endpointRequestService.createNewEndpointRequest(
-                    new EndpointRequest(
-                            "POST",
-                            System.currentTimeMillis() - startTime,
-                            "/skiers"));
+            logger.info("POST request - " + (System.currentTimeMillis() - startTime));
             return response;
         }
+        logger.info("POST request - " + (System.currentTimeMillis() - startTime));
         throw new InvalidCredentialsException();
     }
 }
