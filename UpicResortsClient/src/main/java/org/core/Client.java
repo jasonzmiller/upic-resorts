@@ -1,5 +1,9 @@
 package org.core;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -20,24 +24,11 @@ public class Client {
 
   public static String IP = "http://3.15.180.159:8080/UpicResortsServer-2.5.6";
 
-  //phase 2 starts after 10% of part 1 is finished
-  public final CountDownLatch phase1;
-  //phase 3 starts after 10% of total threads finished
-  public final CountDownLatch phase2;
-  public final CountDownLatch total;
-
   // success and failure checks for each thread
   public int success = 0;
   public int failure = 0;
 
-  public Client() {
-    //phase 2 starts after 10% of part 1 is finished
-    phase1 = new CountDownLatch(numThreads / 4 / 10);
-
-    phase2 = new CountDownLatch(numThreads / 10);
-
-    total = new CountDownLatch(numThreads / 4 + numThreads + numThreads / 4);
-  }
+  public Client() {}
 
   public Client(int numThreads, int numSkiers, int numLifts, int numRuns, String ip) {
     if (numThreads < 0 || numThreads > 256) {
@@ -61,13 +52,6 @@ public class Client {
         .format("NumThreads = %d, numSkiers = %d, numLifts = %d", this.numThreads,
             this.numSkiers, this.numLifts);
     logger.info("Initialized with " + output);
-    //phase 2 starts after 10% of part 1 is finished
-    phase1 = new CountDownLatch(numThreads / 4 / 10);
-
-    phase2 = new CountDownLatch(numThreads / 10);
-
-    total = new CountDownLatch(
-        numThreads / 4 + numThreads + numThreads / 4);
   }
 
   public synchronized void testSuccess() {
@@ -109,75 +93,48 @@ public class Client {
     }
     final int skiersPerThread = client.numSkiers / client.numThreads;
     final Random random = new Random();
-    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    final Timestamp[] timestamp = {new Timestamp(System.currentTimeMillis())};
 
-    long startupTime = timestamp.getTime();
+    long startupTime = timestamp[0].getTime();
 
+    //Creating the 5 second logging
+    Client finalClient = client;
+    final Runnable print5Seconds = () -> System.out.println("Tasks completed in the last 5 seconds: "
+        + finalClient.getSuccess() + finalClient.getFailure());
 
-        /*Phase 1, the startup phase, will launch numThreads/4 threads, and each thread will be passed:
-        > a start and end range for skierIDs, so that each thread has an identical number of skierIDs,
-        calculated as numSkiers/(numThreads/4). Pass each thread a disjoint range of skierIDs so that
-        the whole range of IDs is covered by the threads, ie, thread 0 has skierIDs from
-        1 to (numSkiers/(numThreads/4)), thread 1 has skierIDs from (1x(numSkiers/(numThreads/4)+1)
-        to (numSkiers/(numThreads/4))x2
-        > a start and end time, for this phase this is the first 90 minutes of the ski day (1-90)
-        For example if numThreads=64 and numSkiers=1024, we will launch 16 threads, with thread 0
-        passed skierID range 1 to 64, thread 1 range 65 to 128, and so on.*/
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    final ScheduledFuture<?> printoutHandler = scheduler.scheduleAtFixedRate(print5Seconds,5, 5, TimeUnit.SECONDS);
+    scheduler.schedule(new Runnable() {
+      @Override
+      public void run() {
+        printoutHandler.cancel(true);
+        //Capture total time spent on operation before shutdown
+        timestamp[0] = new Timestamp(System.currentTimeMillis());
+        long afterPhase3 = timestamp[0].getTime();
 
+        String output = String
+            .format("NumThreads = %d, numSkiers = %d, numLifts = %d", finalClient.numThreads,
+                finalClient.numSkiers, finalClient.numLifts);
+        logger.info("Configuration - " + output);
+        logger.info("Success " + finalClient.success);
+        logger.info("failure " + finalClient.failure);
+        logger.info("total time " + (afterPhase3 - startupTime) / 1000.0 + " seconds.");
+
+        System.exit(0);
+      }
+      //shutdown after 15 minutes
+    }, 60 * 15, TimeUnit.SECONDS);
+
+    //creation of the threads
     for (int i = 0; i < client.numThreads / 4; i++) {
-      Thread threadPhase1 = new Thread(client, client.numSkiers / (client.numThreads / 4), random,
-          0.1, 1,
-          90, 1);
+      Thread threadPhase1 = new Thread(client, skiersPerThread, random,
+          1, 1,
+          420);
       java.lang.Thread thread1 = new java.lang.Thread(threadPhase1);
       thread1.start();
     }
 
-    logger.info("Waiting for phase 1 to complete...");
-    client.phase1.await();
 
 
-        /*Once 10% (rounded up) of the threads in Phase 1 have completed, Phase 2, the peak phase should begin. Phase 2 behaves like Phase 1, except:
-        > it creates numThreads threads
-        > the start and end time interval is 91 to 360
-        > each thread is passed a disjoint skierID range of size (numSkiers/numThreads)
-        As above, each thread will randomly select a skierID, liftID and time from the ranges provided and
-        sends a POST request. It will do this (numRuns x 0.8)x(numSkiers/numThreads) times. Back to our
-        example above, this means phase 2 would create 64 threads, and and each sends 16*(1024/64) POSTs.*/
-
-    for (int i = 0; i < client.numThreads; i++) {
-      Thread threadPhase2 = new Thread(client, skiersPerThread, random, 0.8, 91, 360, 2);
-      java.lang.Thread thread2 = new java.lang.Thread(threadPhase2);
-      thread2.start();
-    }
-
-    logger.info("Waiting for phase 2 to complete...");
-    client.phase2.await();
-
-
-        /*Finally, once 10% of the threads in Phase 2 complete, Phase 3 should begin. Phase 3, the
-        cooldown phase, is identical to Phase 1, starting 25% of numThreads, with each thread sending
-        (0.1 x numRuns) POST requests, and with a time interval range of 361 to 420.*/
-
-    for (int i = 0; i < client.numThreads / 4; i++) {
-      Thread threadPhase3 = new Thread(client, client.numSkiers / (client.numThreads / 4), random,
-          0.1,
-          361, 420, 3);
-      java.lang.Thread thread3 = new java.lang.Thread(threadPhase3);
-      thread3.start();
-    }
-    logger.info("Waiting for all phases to complete...");
-    client.total.await();
-
-    //Capture total time spent on operation
-    timestamp = new Timestamp(System.currentTimeMillis());
-    long afterPhase3 = timestamp.getTime();
-
-    String output = String
-        .format("NumThreads = %d, numSkiers = %d, numLifts = %d", client.numThreads,
-            client.numSkiers, client.numLifts);
-    logger.info("Configuration - " + output);
-    logger.info("Success " + client.success);
-    logger.info("failure " + client.failure);
-    logger.info("total time " + (afterPhase3 - startupTime) / 1000.0 + " seconds.");
   }
 }

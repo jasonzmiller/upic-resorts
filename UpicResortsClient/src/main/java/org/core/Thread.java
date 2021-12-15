@@ -22,24 +22,22 @@ public class Thread implements Runnable {
   private double coefficient;
   private int startTime;
   private int endTime;
-  private int phase;
   private HttpClient httpClient;
 
   public Thread(Client client, int skiersPerThread, Random random, double coefficient,
-      int startTime, int endTime, int phase) {
+      int startTime, int endTime) {
     this.client = client;
     this.skiersPerThread = skiersPerThread;
     this.random = random;
     this.coefficient = coefficient;
     this.startTime = startTime;
     this.endTime = endTime;
-    this.phase = phase;
+
     httpClient = HttpClient.newHttpClient();
   }
 
   @Override
   public void run() {
-    try {
       for (int j = 0; j < this.client.numRuns * coefficient * skiersPerThread; j++) {
         // Code takes too long to run, reduce the number of requests in half
         if (j % 3 == 0 || j % 3 == 1)
@@ -83,15 +81,7 @@ public class Thread implements Runnable {
           logger.error("Failed due to ", e);
         }
       }
-    } finally {
-      // depending on the phase, lower the countDownLatch
-      if (phase == 1) {
-        client.phase1.countDown();
-      } else if (phase == 2) {
-        client.phase2.countDown();
-      }
-      client.total.countDown();
-    }
+
   }
 
   private int getResortId(int liftId) {
