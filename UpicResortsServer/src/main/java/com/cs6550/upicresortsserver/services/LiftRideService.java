@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LiftRideService {
@@ -21,6 +22,18 @@ public class LiftRideService {
 
     @Autowired
     private SkierService skierService;
+
+    public ResponseEntity<LiftRide> getLiftRide(String liftRideId) {
+        int liftRideIdInt;
+        try {
+            liftRideIdInt = Integer.parseInt(liftRideId);
+        } catch (IllegalArgumentException ex) {
+            throw new BadRequestException("IDs must be numeric.");
+        }
+        Optional<LiftRide> response = liftRideRepository.findById(liftRideIdInt);
+        if (response.isEmpty()) throw new EntityNotFoundException("Data not found.");
+        return new ResponseEntity<>(response.get(), HttpStatus.OK);
+    }
 
     public ResponseEntity<LiftRidesList> getLiftRides() {
         List<LiftRide> rides = (List<LiftRide>) liftRideRepository.findAll();
@@ -49,6 +62,7 @@ public class LiftRideService {
         liftRideRepository.save(newLiftRide);
         newLiftRide = liftRideRepository.findLiftRideBy(resortId, skierId, liftId, time);
         newLiftRide.setUrl("/liftrides/" + newLiftRide.getLiftRideId());
+        liftRideRepository.save(newLiftRide);
         return new ResponseEntity<>(newLiftRide, HttpStatus.CREATED);
     }
 
@@ -63,7 +77,7 @@ public class LiftRideService {
             throw new BadRequestException("Skier ID must be positive.");
         }
 
-        if (liftRideRepository.findLiftRideBy(resortId, skierId, liftId, time) == null)
+        if (liftRideRepository.findLiftRideBy(resortId, skierId, liftId, time) != null)
             throw new BadRequestException("This lift ride already exists.");
 
         return new LiftRide(resortId, skierId, time, liftId);

@@ -28,7 +28,7 @@ public class UpicResortsServerApplication {
     @Bean
     public CommandLineRunner initDatabase() {
         return args -> {
-            statisticService.clearAllStatistics();
+            // statisticService.clearAllStatistics();
             liftRideService.deleteAll();
             skierService.deleteAll();
         };

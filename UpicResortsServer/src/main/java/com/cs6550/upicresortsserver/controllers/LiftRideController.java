@@ -22,13 +22,13 @@ public class LiftRideController {
     @Autowired
     private LiftRideService service;
 
-    @Autowired
-    private EndpointRequestService endpointRequestService;
-
     Logger logger = LoggerFactory.getLogger(LiftRideController.class);
 
+    @GetMapping("/liftrides/{liftRideId}")
+    public ResponseEntity<LiftRide> getLiftRide(@PathVariable("liftRideId") String liftRideId) {
+        return service.getLiftRide(liftRideId);
+    }
 
-    // TODO - "url" : "liftrides/{liftRideId}" - make sure {liftRideID} is added in POST method
     @GetMapping("/liftrides")
     public ResponseEntity<LiftRidesList> getAllLiftRides(@RequestParam(required = false, name = "skier") String skierId) {
         long startTime = System.currentTimeMillis();
@@ -52,9 +52,9 @@ public class LiftRideController {
         if (Authentication.checkBasicAuth(authorization))
         {
             response = service.writeNewLiftRide(
-                    liftRideRequest.getResort(),
-                    liftRideRequest.getSkier(),
-                    liftRideRequest.getLift(),
+                    liftRideRequest.getResortId(),
+                    liftRideRequest.getSkierId(),
+                    liftRideRequest.getLiftId(),
                     liftRideRequest.getTime());
         }
         if (response != null)

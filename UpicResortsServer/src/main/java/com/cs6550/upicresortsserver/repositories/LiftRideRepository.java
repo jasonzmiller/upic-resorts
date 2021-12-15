@@ -15,7 +15,7 @@ public interface LiftRideRepository extends CrudRepository<LiftRide, Integer> {
 
     @Query(value = "SELECT * " +
                    "FROM lift_rides " +
-                   "WHERE resort_id=:resortId AND skier_id=:dayId AND lift_id=:skierId AND time=:time", nativeQuery = true)
+                   "WHERE resort_id=:resortId AND skier_id=:skierId AND lift_id=:liftId AND time=:time", nativeQuery = true)
     LiftRide findLiftRideBy(@Param("resortId") int resortId,
                             @Param("skierId") int skierId,
                             @Param("liftId") int liftId,

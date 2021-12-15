@@ -2,31 +2,31 @@ package com.cs6550.upicresortsserver.models;
 
 public class LiftRideRequest {
 
-    private int skier;
+    private int skierId;
 
-    private int resort;
+    private int resortId;
 
     private int time;
 
-    private int lift;
+    private int liftId;
 
     public LiftRideRequest() {
     }
 
-    public int getSkier() {
-        return skier;
+    public int getSkierId() {
+        return skierId;
     }
 
-    public void setSkier(int skier) {
-        this.skier = skier;
+    public void setSkierId(int skierId) {
+        this.skierId = skierId;
     }
 
-    public int getResort() {
-        return resort;
+    public int getResortId() {
+        return resortId;
     }
 
-    public void setResort(int resort) {
-        this.resort = resort;
+    public void setResortId(int resortId) {
+        this.resortId = resortId;
     }
 
     public int getTime() {
@@ -37,11 +37,11 @@ public class LiftRideRequest {
         this.time = time;
     }
 
-    public int getLift() {
-        return lift;
+    public int getLiftId() {
+        return liftId;
     }
 
-    public void setLift(int lift) {
-        this.lift = lift;
+    public void setLiftId(int liftId) {
+        this.liftId = liftId;
     }
 }
