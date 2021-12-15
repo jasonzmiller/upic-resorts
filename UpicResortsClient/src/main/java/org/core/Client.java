@@ -28,6 +28,19 @@ public class Client {
   public int success = 0;
   public int failure = 0;
 
+  //histogram implementation
+  int[] histogram = new int[500];
+  int over_5s;
+
+  public void update(int millis) {
+    if (millis >= 5000) {
+      over_5s++;
+    } else {
+      histogram[millis/10]++;
+    }
+  }
+
+
   public Client() {}
 
   public Client(int numThreads, int numSkiers, int numLifts, int numRuns, String ip) {
@@ -102,7 +115,7 @@ public class Client {
     final Runnable print5Seconds = () -> System.out.println("Tasks completed in the last 5 seconds: "
         + finalClient.getSuccess() + finalClient.getFailure());
 
-    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
     final ScheduledFuture<?> printoutHandler = scheduler.scheduleAtFixedRate(print5Seconds,5, 5, TimeUnit.SECONDS);
     scheduler.schedule(new Runnable() {
       @Override
