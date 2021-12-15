@@ -40,6 +40,13 @@ public class Client {
     }
   }
 
+  public int findAvg(int[] histogram) {
+    int sum = 0;
+    for (int i : histogram) {
+      sum += i;
+    }
+    return sum/histogram.length;
+  }
 
   public Client() {}
 
@@ -131,6 +138,7 @@ public class Client {
         logger.info("Configuration - " + output);
         logger.info("Success " + finalClient.success);
         logger.info("failure " + finalClient.failure);
+        logger.info("average request length " + finalClient.findAvg(finalClient.histogram));
         logger.info("total time " + (afterPhase3 - startupTime) / 1000.0 + " seconds.");
 
         System.exit(0);
