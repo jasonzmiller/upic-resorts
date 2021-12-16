@@ -15,86 +15,56 @@ import java.util.Random;
 public class Thread implements Runnable {
 
   private static final Logger logger = LogManager.getLogger(Thread.class);
-  private static final String URL_CORE = "/skiers/%resort_id%/seasons/2021/days/22/skiers/";
+  private static final String URL_CORE = "/liftrides/";
   private Client client;
-  private int skiersPerThread;
   private Random random;
-  private double coefficient;
-  private int startTime;
-  private int endTime;
   private HttpClient httpClient;
 
-  public Thread(Client client, int skiersPerThread, Random random, double coefficient,
-      int startTime, int endTime) {
+  public Thread(Client client) {
     this.client = client;
-    this.skiersPerThread = skiersPerThread;
-    this.random = random;
-    this.coefficient = coefficient;
-    this.startTime = startTime;
-    this.endTime = endTime;
+    this.random = new Random();
 
     httpClient = HttpClient.newHttpClient();
   }
 
   @Override
   public void run() {
-      for (int j = 0; j < this.client.numRuns * coefficient * skiersPerThread; j++) {
-        // Code takes too long to run, reduce the number of requests in half
-        if (j % 3 == 0 || j % 3 == 1)
-        {
+    while (!client.isDone())
+    {
+      System.out.println(client.isDone());
+      int skierId = random.nextInt(50) + 1;
+      int resortId = random.nextInt(4) + 1;
+      int liftId = random.nextInt(8) + 1;
+      int time = random.nextInt(500) + 1;
+      String url = Client.IP + URL_CORE;
+      String messageBody = String.format("{\"liftId\" : %d, \"time\" : %d, \"resortId\" : %d, \"skierId\" : %d}", liftId, time, resortId, skierId);
+      try {
+
+        int startTimePost = (int) System.currentTimeMillis();
+        HttpResponse<String> res = doPost(httpClient, url, messageBody);
+        client.updatePOST((int) System.currentTimeMillis() - startTimePost);
+
+        if (res.statusCode() == 201) {
           client.testSuccess();
-          continue;
-        }
-        //creating random skier id for EACH thread
-        int skierId = random.nextInt(this.client.numSkiers) + 1;
-
-        //choosing a random liftID
-        int liftId = random.nextInt(this.client.numLifts);
-        // 40 lifts and 5 resorts, so 8 for each resort.
-        int resortId = getResortId(liftId);
-        liftId = (liftId % 8) + 1;
-        //choosing random time period
-        int time = startTime + random.nextInt(endTime - startTime + 1);
-
-        try {
-          String url = Client.IP + URL_CORE + skierId;
-          url = url.replace("%resort_id%", "" + resortId);
-          String messageBody = String.format("{\"liftId\" : %d, \"time\" : %d}", liftId, time);
-          //logger.debug("Calling url " + url + "\n with body - " + messageBody);
-
-          //adding client latency
-          int startTimePost = (int) System.currentTimeMillis();
-          HttpResponse<String> res = doPost(httpClient, url, messageBody);
-          client.updatePOST((int) System.currentTimeMillis() - startTimePost);
-
-          if (res.statusCode() == 201) {
-            client.testSuccess();
-          } else if (res.statusCode() >= 400) {
-            client.testFailure();
-            logger.error("Failure: " + client.getFailure() + "\n caused by :" + res.body());
-          }
-
-          // make a get request immediately
-          int startTimeGet = (int) System.currentTimeMillis();
-          HttpResponse<String> getRes = doGet(httpClient, url);
-          client.updateGET((int) System.currentTimeMillis() - startTimeGet);
-
-          if (res.statusCode() >= 400) {
-            logger.error("Failure: GET request " + client.getFailure() + "\n caused by :" + getRes.body() + " url - " + url);
-          }
-
-        } catch (Exception e) {
+        } else if (res.statusCode() >= 400) {
           client.testFailure();
-          logger.error("Failure: " + client.getFailure());
-          logger.error("Failed due to ", e);
+          logger.error("Failure: " + client.getFailure() + "\n caused by :" + res.body());
         }
+
+        int startTimeGet = (int) System.currentTimeMillis();
+        HttpResponse<String> getRes = doGet(httpClient, url);
+        client.updateGET((int) System.currentTimeMillis() - startTimeGet);
+        if (getRes.statusCode() >= 400) {
+          logger.error("Failure: GET request " + client.getFailure() + "\n caused by :" + getRes.body() + " url - " + url);
+        }
+      } catch (Exception e) {
+        client.testFailure();
+        logger.error("Failure: " + client.getFailure());
+        logger.error("Failed due to ", e);
       }
-
+    }
   }
 
-  private int getResortId(int liftId) {
-    return (liftId / 8) + 1;
-  }
 
   private static HttpResponse<String> doGet(HttpClient client, String URL)
       throws IOException, InterruptedException {
