@@ -20,8 +20,8 @@ public class Client {
   // parameters ideally in env, but here for testing
   public int numThreads = 32;
 
-  public static String IP = "http://3.15.180.159:8080/UpicResortsServer-2.5.6";
-
+  //public static String IP = "http://3.15.180.159:8080/UpicResortsServer-2.5.6";
+  public static String IP = "http://localhost:8080";
   // success and failure checks for each thread
   public int success = 0;
   public int failure = 0;
@@ -33,10 +33,10 @@ public class Client {
   int[] histogramALL = new int[500];
   int over_5s;
 
-  public boolean isDone()
-  {
+  public boolean isDone() {
     return done;
   }
+
   public void updateGET(int millis) {
     if (millis >= 5000) {
       over_5s++;
@@ -46,7 +46,7 @@ public class Client {
     }
   }
 
-  public void updatePOST(int millis) {
+  public synchronized void updatePOST(int millis) {
     if (millis >= 5000) {
       over_5s++;
     } else {
@@ -55,12 +55,12 @@ public class Client {
     }
   }
 
-  public int findAvg(int[] histogram) {
+  public double findAvg(int[] histogram) {
     int sum = 0;
     for (int i : histogram) {
       sum += i;
     }
-    return sum / histogram.length;
+    return (sum * 1.0 / histogram.length);
   }
 
   public synchronized void testSuccess() {
@@ -90,9 +90,13 @@ public class Client {
     long startupTime = System.currentTimeMillis();
     //Creating the 5 second logging
     Client client = new Client(3);
-    final Runnable print5Seconds = () -> System.out
-        .println("Tasks completed in the last 5 seconds: "
-            + (client.getSuccess() + client.getFailure()));
+    final Runnable print5Seconds = () -> {
+      System.out
+          .print("Tasks completed in the last 5 seconds: "
+              + (client.getSuccess() + client.getFailure()));
+      System.out.println(
+          " Elapsed time -" + (System.currentTimeMillis() - startupTime) / 1000.0 + " seconds.");
+    };
     final Runnable setFlag = () -> {
       System.out.println("setting flag");
       client.done = true;

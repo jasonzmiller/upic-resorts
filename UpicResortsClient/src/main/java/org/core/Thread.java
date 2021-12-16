@@ -31,7 +31,6 @@ public class Thread implements Runnable {
   public void run() {
     while (!client.isDone())
     {
-      System.out.println(client.isDone());
       int skierId = random.nextInt(50) + 1;
       int resortId = random.nextInt(4) + 1;
       int liftId = random.nextInt(8) + 1;
