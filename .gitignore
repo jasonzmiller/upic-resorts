@@ -1,7 +1,13 @@
 
 *.class
-*.class
-*.class
+.idea/*
+.idea/.name
+.idea/artifacts/UpicResortsServer_war.xml
+.idea/artifacts/UpicResortsServer_war_exploded.xml
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/jarRepositories.xml
+*.iml
 *.class
 *.class
 *.class
