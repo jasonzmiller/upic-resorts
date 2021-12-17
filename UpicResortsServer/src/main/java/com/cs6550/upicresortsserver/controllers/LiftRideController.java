@@ -26,7 +26,10 @@ public class LiftRideController {
 
     @GetMapping("/liftrides/{liftRideId}")
     public ResponseEntity<LiftRide> getLiftRide(@PathVariable("liftRideId") String liftRideId) {
-        return service.getLiftRide(liftRideId);
+        long startTime = System.currentTimeMillis();
+        ResponseEntity<LiftRide> response = service.getLiftRide(liftRideId);
+        logger.info("GET request for liftRideId " + liftRideId + " - " + (System.currentTimeMillis() - startTime));
+        return response;
     }
 
     @GetMapping("/liftrides")
